@@ -1166,7 +1166,7 @@ AudioManager.audioFileExt = function() {
     if (WebAudio.canPlayOgg() && !Utils.isMobileDevice()) {
         return '.ogg';
     } else {
-        return '.m4a';
+        return '.ogg';
     }
 };
 
