@@ -1,5 +1,5 @@
 //=============================================================================
-// rpg_windows.js v1.5.1
+// rpg_windows.js
 //=============================================================================
 
 //-----------------------------------------------------------------------------
@@ -700,12 +700,6 @@ Window_Base.prototype.canvasToLocalY = function(y) {
         node = node.parent;
     }
     return y;
-};
-
-Window_Base.prototype.reserveFaceImages = function() {
-    $gameParty.members().forEach(function(actor) {
-        ImageManager.reserveFace(actor.faceName());
-    }, this);
 };
 
 //-----------------------------------------------------------------------------
@@ -1705,6 +1699,7 @@ Window_MenuStatus.prototype.initialize = function(x, y) {
     Window_Selectable.prototype.initialize.call(this, x, y, width, height);
     this._formationMode = false;
     this._pendingIndex = -1;
+    this.loadImages();
     this.refresh();
 };
 
@@ -1731,7 +1726,7 @@ Window_MenuStatus.prototype.numVisibleRows = function() {
 
 Window_MenuStatus.prototype.loadImages = function() {
     $gameParty.members().forEach(function(actor) {
-        ImageManager.reserveFace(actor.faceName());
+        ImageManager.loadFace(actor.faceName());
     }, this);
 };
 
@@ -1755,7 +1750,7 @@ Window_MenuStatus.prototype.drawItemImage = function(index) {
     var actor = $gameParty.members()[index];
     var rect = this.itemRect(index);
     this.changePaintOpacity(actor.isBattleMember());
-    this.drawActorFace(actor, rect.x + 1, rect.y + 1, Window_Base._faceWidth, Window_Base._faceHeight);
+    this.drawActorFace(actor, rect.x + 1, rect.y + 1, 144, rect.height - 2);
     this.changePaintOpacity(true);
 };
 
@@ -2526,7 +2521,6 @@ Window_Status.prototype.initialize = function() {
     var width = Graphics.boxWidth;
     var height = Graphics.boxHeight;
     Window_Selectable.prototype.initialize.call(this, 0, 0, width, height);
-    this._actor = null;
     this.refresh();
     this.activate();
 };
@@ -3438,7 +3432,7 @@ Window_NameEdit.prototype.initialize = function(actor, maxLength) {
     this._defaultName = this._name;
     this.deactivate();
     this.refresh();
-    ImageManager.reserveFace(actor.faceName());
+    ImageManager.loadFace(actor.faceName());
 };
 
 Window_NameEdit.prototype.windowWidth = function() {
@@ -3588,25 +3582,25 @@ Window_NameInput.RUSSIA =
           '0','1','2','3','4',  '(',')','*','+','-',
           '5','6','7','8','9',  ':',';',' ','','OK' ];
 Window_NameInput.JAPAN1 =
-        [ 'あ','い','う','え','お',  'が','ぎ','ぐ','げ','ご',
-          'か','き','く','け','こ',  'ざ','じ','ず','ぜ','ぞ',
-          'さ','し','す','せ','そ',  'だ','ぢ','づ','で','ど',
-          'た','ち','つ','て','と',  'ば','び','ぶ','べ','ぼ',
-          'な','に','ぬ','ね','の',  'ぱ','ぴ','ぷ','ぺ','ぽ',
-          'は','ひ','ふ','へ','ほ',  'ぁ','ぃ','ぅ','ぇ','ぉ',
-          'ま','み','む','め','も',  'っ','ゃ','ゅ','ょ','ゎ',
-          'や','ゆ','よ','わ','ん',  'ー','～','・','＝','☆',
-          'ら','り','る','れ','ろ',  'ゔ','を','　','カナ','決定' ];
+        [ '一','二','三','四','五',  '红','黄','蓝','紫','黑',
+          '六','七','八','九','十',  '大','小','萌','绿','青',
+          '床','前','明','月','光',  '橙','白','铁','吞','圣',
+          '疑','是','地','上','霜',  '音','乐','马','猴','猪',
+          '霸','王','雪','狼','狐',  '鸟','雀','鹰','的','之',
+          '舞','百','合','花','开',  '鸡','金','木','水','火',
+          '迷','你','玲','珑','神',  '土','雷','风','丛','林',
+          '下','左','右','飞','空',  '魔','冰','蛇','犬','天',
+          '宝','贝','魂','玉','银',  '蜂','龙','牛','翻页','确认' ];
 Window_NameInput.JAPAN2 =
-        [ 'ア','イ','ウ','エ','オ',  'ガ','ギ','グ','ゲ','ゴ',
-          'カ','キ','ク','ケ','コ',  'ザ','ジ','ズ','ゼ','ゾ',
-          'サ','シ','ス','セ','ソ',  'ダ','ヂ','ヅ','デ','ド',
-          'タ','チ','ツ','テ','ト',  'バ','ビ','ブ','ベ','ボ',
-          'ナ','ニ','ヌ','ネ','ノ',  'パ','ピ','プ','ペ','ポ',
-          'ハ','ヒ','フ','ヘ','ホ',  'ァ','ィ','ゥ','ェ','ォ',
-          'マ','ミ','ム','メ','モ',  'ッ','ャ','ュ','ョ','ヮ',
-          'ヤ','ユ','ヨ','ワ','ン',  'ー','～','・','＝','☆',
-          'ラ','リ','ル','レ','ロ',  'ヴ','ヲ','　','英数','決定' ];
+        [ '东','南','西','北','中',  '胖','庞','螃','狮','虎',
+          '笑','啸','萧','霄','晓',  '太','泰','阳','洋','羊',
+          '弓','公','攻','宮','功',  '力','莉','丽','梨','黎',
+          '法','罚','反','烦','饭',  '翻','犯','梵','芳','房',
+          '放','房','方','仿','防',  '分','粉','奋','愤','焚',
+          '封','疯','枫','凤','锋',  '血','写','蟹','削','鳕',
+          '我','答','猜','不','乾',  '坤','案','理','智','信',
+          '啊','阿','奥','傲','鳌',  '爱','哎','矮','哀','吼',
+          '暗','岸','艾','诶','恶',  '呵','哈','嘿','翻页','确认' ];
 Window_NameInput.JAPAN3 =
         [ 'Ａ','Ｂ','Ｃ','Ｄ','Ｅ',  'ａ','ｂ','ｃ','ｄ','ｅ',
           'Ｆ','Ｇ','Ｈ','Ｉ','Ｊ',  'ｆ','ｇ','ｈ','ｉ','ｊ',
@@ -3616,7 +3610,7 @@ Window_NameInput.JAPAN3 =
           'Ｚ','［','］','＾','＿',  'ｚ','｛','｝','｜','～',
           '０','１','２','３','４',  '！','＃','＄','％','＆',
           '５','６','７','８','９',  '（','）','＊','＋','－',
-          '／','＝','＠','＜','＞',  '：','；','　','かな','決定' ];
+          '／','＝','＠','＜','＞',  '：','；','　','翻页','決定' ];
 
 Window_NameInput.prototype.initialize = function(editWindow) {
     var x = editWindow.x;
@@ -4257,7 +4251,6 @@ Window_Message.prototype.initialize = function() {
 };
 
 Window_Message.prototype.initMembers = function() {
-    this._imageReservationId = Utils.generateRuntimeId();
     this._background = 0;
     this._positionType = 2;
     this._waitCount = 0;
@@ -4369,7 +4362,7 @@ Window_Message.prototype.updateWait = function() {
 
 Window_Message.prototype.updateLoading = function() {
     if (this._faceBitmap) {
-        if (this._faceBitmap.isReady()) {
+        if (ImageManager.isReady()) {
             this.drawMessageFace();
             this._faceBitmap = null;
             return false;
@@ -4487,12 +4480,11 @@ Window_Message.prototype.newPage = function(textState) {
 };
 
 Window_Message.prototype.loadMessageFace = function() {
-    this._faceBitmap = ImageManager.reserveFace($gameMessage.faceName(), 0, this._imageReservationId);
+    this._faceBitmap = ImageManager.loadFace($gameMessage.faceName());
 };
 
 Window_Message.prototype.drawMessageFace = function() {
     this.drawFace($gameMessage.faceName(), $gameMessage.faceIndex(), 0, 0);
-    ImageManager.releaseReservation(this._imageReservationId);
 };
 
 Window_Message.prototype.newLineX = function() {
@@ -5439,14 +5431,7 @@ Window_ActorCommand.prototype.processOk = function() {
 Window_ActorCommand.prototype.selectLast = function() {
     this.select(0);
     if (this._actor && ConfigManager.commandRemember) {
-        var symbol = this._actor.lastCommandSymbol();
-        this.selectSymbol(symbol);
-        if (symbol === 'skill') {
-            var skill = this._actor.lastBattleSkill();
-            if (skill) {
-                this.selectExt(skill.stypeId);
-            }
-        }
+        this.selectSymbol(this._actor.lastCommandSymbol());
     }
 };
 
